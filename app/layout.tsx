@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "MixMe",
   description: "All in one AI Platform",
+  icons: "/logo.png",
 };
 
 export default function RootLayout({

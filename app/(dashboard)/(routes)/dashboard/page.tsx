@@ -41,7 +41,7 @@ const tools = [
     href: "/code",
     icon: Code,
     color: "text-green-700",
-    bgColor: "bg-green-500/10",
+    bgColor: "bg-green-700/10",
   },
 ];
 

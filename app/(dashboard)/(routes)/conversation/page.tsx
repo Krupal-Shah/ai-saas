@@ -17,14 +17,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import axios from "axios";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 
+interface Message {
+  role: string;
+  message: string;
+}
+
 const ConversationPage = () => {
   const router = useRouter();
-  const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,17 +40,12 @@ const ConversationPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage: ChatCompletionMessageParam = {
-        role: "user",
-        content: values.prompt,
-      };
-      const newMessages = [...messages, userMessage];
-
       const response = await axios.post("/api/conversation", {
-        messages: newMessages,
+        message: values.prompt,
+        chatHistory: messages,
       });
 
-      setMessages((current) => [...current, userMessage, response.data]);
+      setMessages(response.data);
       form.reset();
     } catch (error: any) {
       console.error(error);
@@ -105,15 +104,18 @@ const ConversationPage = () => {
             <Empty label="No conversation started." />
           )}
           <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message, index) => (
+            {messages.map((message) => (
               <div
-                key={message.content?.toString()}
-                className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg", message.role === "user" ? "bg-white border border-black/10" : "bg-muted")}
+                key={message["message"]}
+                className={cn(
+                  "p-8 w-full flex items-start gap-x-8 rounded-lg",
+                  message["role"] === "USER"
+                    ? "bg-white border border-black/10"
+                    : "bg-muted"
+                )}
               >
-                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">
-                    {message.content?.toString()}
-                </p>
+                {message["role"] === "USER" ? <UserAvatar /> : <BotAvatar />}
+                <p className="text-sm">{message["message"]}</p>
               </div>
             ))}
           </div>

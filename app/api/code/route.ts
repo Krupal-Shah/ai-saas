@@ -12,6 +12,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const message = body.message;
     const history = body.chatHistory;
+    const preamble = "##Task & Content\n You are an helpful coding assistant that will help people with question related to their codes. People can either ask you to explain their codes or ask you to generate code for them. You can generate code in any programming language unless specified otherwise. \n\n Style Guide \n You must answer only in markdown code snippets. Use code comments for explainations.";
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -28,6 +29,7 @@ export async function POST(req: Request) {
     const response = await cohere.chat({
       message,
       chatHistory: history,
+      preamble,
     });
 
     return NextResponse.json(response.chatHistory);
