@@ -22,12 +22,15 @@ import axios from "axios";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 
+import { useProModel } from "@/hooks/use-pro-model";
+
 interface Message {
   role: string;
   message: string;
 }
 
 const CodePage = () => {
+  const proModel = useProModel();
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,7 +52,9 @@ const CodePage = () => {
       setMessages(response.data);
       form.reset();
     } catch (error: any) {
-      console.error(error);
+      if (error?.response?.status === 403){
+        proModel.onOpen();
+      }
     } finally {
       router.refresh();
     }

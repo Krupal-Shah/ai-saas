@@ -2,6 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
 
+import { increaseApiLimit, checkApiLimit } from "@/lib/api_limit";
+
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_KEY,
 });
@@ -27,6 +29,12 @@ export async function POST(req: Request) {
       return new NextResponse("Messages are required", { status: 400 });
     }
 
+    const freeTrial = await checkApiLimit();
+
+    if (!freeTrial) {
+      return new NextResponse("Exceeded API limit", { status: 403 });
+    }
+
     const response = await replicate.run(
       "bytedance/sdxl-lightning-4step:5f24084160c9089501c1b3545d9be3c27883ae2239b6f412990e82d4a6210f8f",
       {
@@ -42,6 +50,8 @@ export async function POST(req: Request) {
         }
       }
     );
+
+    await increaseApiLimit();
 
     return NextResponse.json({ video: response });
   } catch (error) {

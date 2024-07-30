@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Download, ImageIcon, Video, VideoIcon } from "lucide-react";
+import { VideoIcon } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -15,12 +15,14 @@ import { Loader } from "@/components/loader";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import axios from "axios";
 
+import { useProModel } from "@/hooks/use-pro-model";
+
 const VideoPage = () => {
+  const proModel = useProModel();
   const router = useRouter();
   const [video, setVideo] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -45,7 +47,9 @@ const VideoPage = () => {
       setVideo(response.data.video);
       form.reset();
     } catch (error: any) {
-      console.error(error);
+      if (error?.response?.status === 403){
+        proModel.onOpen();
+      }
     } finally {
       router.refresh();
     }

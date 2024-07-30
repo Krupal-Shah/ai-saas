@@ -21,7 +21,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import axios from "axios";
 
+import { useProModel } from "@/hooks/use-pro-model";
+
+
 const ImagePage = () => {
+  const proModel = useProModel();
   const router = useRouter();
   const [image, setImage] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,7 +50,9 @@ const ImagePage = () => {
       setImage(response.data.image);
       form.reset();
     } catch (error: any) {
-      console.error(error);
+      if (error?.response?.status === 403){
+        proModel.onOpen();
+      }
     } finally {
       router.refresh();
     }

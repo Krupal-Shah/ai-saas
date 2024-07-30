@@ -19,8 +19,10 @@ import { cn } from "@/lib/utils";
 
 import axios from "axios";
 
+import { useProModel } from "@/hooks/use-pro-model";
 
 const MusicPage = () => {
+  const proModel = useProModel();
   const router = useRouter();
   const [music, setMusic] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,7 +45,9 @@ const MusicPage = () => {
       setMusic(response.data.audio);
       form.reset();
     } catch (error: any) {
-      console.error(error);
+      if (error?.response?.status === 403){
+        proModel.onOpen();
+      }
     } finally {
       router.refresh();
     }
