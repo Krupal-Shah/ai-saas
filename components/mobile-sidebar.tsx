@@ -5,13 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import Sidebar from "@/components/sidebar";
 import { useEffect, useState } from "react";
-import { getApiLimitCount } from "@/lib/api_limit";
 
 interface MobileSidebarProps {
     apiLimitCount: number;
 }
 
-const MobileSidebar = async ({apiLimitCount}: MobileSidebarProps) => {
+const MobileSidebar = ({apiLimitCount}: MobileSidebarProps) => {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
