@@ -10,15 +10,22 @@ import { useProModel } from "@/hooks/use-pro-model";
 
 interface FreeCounterProps {
   apiLimitCount: number;
+  isPro: boolean;
 }
 
-export const FreeCounter = ({ apiLimitCount }: FreeCounterProps) => {
+export const FreeCounter = ({
+  apiLimitCount = 0,
+  isPro = false,
+}: FreeCounterProps) => {
   const proModel = useProModel();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  if (!mounted) return null;
+  if (isPro) return null;
 
   return (
     <div className="px-3">
@@ -33,7 +40,11 @@ export const FreeCounter = ({ apiLimitCount }: FreeCounterProps) => {
               value={(apiLimitCount / MAX_FREE_COUNT) * 100}
             />
           </div>
-          <Button onClick={proModel.onOpen} className="w-full" variant="premium">
+          <Button
+            onClick={proModel.onOpen}
+            className="w-full"
+            variant="premium"
+          >
             Upgrade to Pro
             <Zap className="w-4 h-4 ml-2 fill-white" />
           </Button>

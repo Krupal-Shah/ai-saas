@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { CohereClient } from 'cohere-ai';
 
 import { increaseApiLimit, checkApiLimit } from "@/lib/api_limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const cohere = new CohereClient({
   token: process.env.COHERE_API_KEY,
@@ -14,6 +15,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const message = body.message;
     const history = body.chatHistory;
+    const isPro = await checkSubscription();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -29,7 +31,7 @@ export async function POST(req: Request) {
 
     const freeTrial = await checkApiLimit();
 
-    if (!freeTrial) {
+    if (!freeTrial && !isPro) {
       return new NextResponse("Exceeded API limit", { status: 403 });
     }
 
@@ -38,8 +40,10 @@ export async function POST(req: Request) {
       chatHistory: history,
     });
     
-    await increaseApiLimit();
-
+    if (!isPro){
+      await increaseApiLimit();
+    }
+  
     return NextResponse.json(response.chatHistory);
   } catch (error) {
     console.error("Error in conversation route: ", error);

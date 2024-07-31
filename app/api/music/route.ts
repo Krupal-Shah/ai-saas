@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import Replicate from "replicate";
 
 import { increaseApiLimit, checkApiLimit } from "@/lib/api_limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_KEY,
@@ -14,6 +15,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { prompt } = body.prompt;
     const { genre } = body.genre;
+    const isPro = await checkSubscription();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -29,7 +31,7 @@ export async function POST(req: Request) {
 
     const freeTrial = await checkApiLimit();
 
-    if (!freeTrial) {
+    if (!freeTrial && !isPro) {
       return new NextResponse("Exceeded API limit", { status: 403 });
     }
     
@@ -47,7 +49,9 @@ export async function POST(req: Request) {
       }
     );
 
-    await increaseApiLimit();
+    if (!isPro){
+      await increaseApiLimit();
+    }
 
 
     return NextResponse.json({ audio: response });
