@@ -25,6 +25,7 @@ import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
 
 const tools = [
   {
@@ -74,7 +75,7 @@ export const ProModal = () => {
       const reponse = await axios.get('/api/stripe');
       window.location.href = reponse.data.url;
     } catch (error) {
-      console.log(error, 'Stripe Client Error');
+      toast.error("Something went wrong");
     } finally{
       setLoading(false);
     }
@@ -113,7 +114,7 @@ export const ProModal = () => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-            <Button onClick={onSubscribe} size='lg' variant={"premium"} className="w-full">
+            <Button disabled={loading} onClick={onSubscribe} size='lg' variant={"premium"} className="w-full">
                 Upgrade
                 <Zap className="w-5 h-5 ml-2 fill-white" />
             </Button>

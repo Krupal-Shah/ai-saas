@@ -4,6 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Download, ImageIcon } from "lucide-react";
 
+import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -52,6 +53,8 @@ const ImagePage = () => {
     } catch (error: any) {
       if (error?.response?.status === 403){
         proModel.onOpen();
+      } else {
+        toast.error("Something went wrong")
       }
     } finally {
       router.refresh();
