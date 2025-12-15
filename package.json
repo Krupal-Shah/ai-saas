@@ -2,6 +2,22 @@
   "name": "ai-saas",
   "version": "0.1.0",
   "private": true,
+  "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
+  "homepage": "https://github.com/Krupal-Shah/ai-saas#readme",
+  "bugs": {
+    "url": "https://github.com/Krupal-Shah/ai-saas/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Krupal-Shah/ai-saas.git"
+  },
+  "license": "ISC",
+  "author": "Krupal Shah",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -25,7 +41,7 @@
     "cohere-ai": "^7.11.0",
     "crisp-sdk-web": "^1.0.25",
     "lucide-react": "^0.412.0",
-    "next": "14.2.5",
+    "next": "^14.2.35",
     "openai": "^4.53.0",
     "react": "^18",
     "react-dom": "^18",
@@ -45,7 +61,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "^16.0.10",
     "postcss": "^8",
     "prisma": "^5.17.0",
     "tailwindcss": "^3.4.1",
